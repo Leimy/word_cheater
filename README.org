@@ -1,0 +1,4 @@
+* word_cheater
+** Description
+	I wanted to win at some bar games by cheating, and use Go.
+** Usage
