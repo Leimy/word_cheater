@@ -1,19 +1,19 @@
 package main
 
 import (
+	"fmt"
 	ana "github.com/Leimy/anagrammer"
 	ss "github.com/Leimy/sortstring"
-	"strings"
-	"sort"
+	"log"
 	"net/http"
 	"old/template"
-	"fmt"
-	"log"
+	"sort"
+	"strings"
 )
 
 var ts = make(map[string]*template.Template)
 
-var anagrams map[string] []string
+var anagrams map[string][]string
 
 func init() {
 	anagrams = ana.AnagramsFromFile("/usr/share/dict/words")
@@ -37,7 +37,7 @@ func goHandler(w http.ResponseWriter, r *http.Request) {
 
 func getAllPerms(in ss.SortString) []string {
 	sort.Sort(in)
-	
+
 	results := make([]string, 0)
 	results = append(results, in.String())
 	for in.NextPermutation(0, in.Len()) == true {
@@ -49,12 +49,12 @@ func getAllPerms(in ss.SortString) []string {
 }
 
 // maps have unique keys, so lets just use it as a set
-func getUniques(perms []string, size int) map [string] int {
-	results := make(map [string] int)
+func getUniques(perms []string, size int) map[string]int {
+	results := make(map[string]int)
 	for _, cur := range perms {
 		cur = cur[0:size] // slice it
 		sorts := ss.NewSortString(cur)
-		sort.Sort(sorts)  // sort it
+		sort.Sort(sorts)            // sort it
 		results[sorts.String()] = 0 // store it
 	}
 
@@ -66,23 +66,23 @@ func runHandler(w http.ResponseWriter, r *http.Request) {
 	allperms := getAllPerms(in)
 	size := in.Len()
 	output := "Results are: \n"
-	for n:=size; n >= 3; n-- {
+	for n := size; n >= 3; n-- {
 		output += fmt.Sprintf("\n\nFor size: %d\n", n)
 		uniques := getUniques(allperms, n)
-		for k, _ := range(uniques) {
+		for k, _ := range uniques {
 			output += fmt.Sprintf("%s", strings.Join(anagrams[k], "\n"))
 		}
 	}
 	output += fmt.Sprintf("\n")
 	renderTemplate(w, "results", &templateParams{output, in.String()})
 }
-		
+
 type templateParams struct {
-	Results string
+	Results    string
 	User_input string
 }
 
-func main () {
+func main() {
 	http.HandleFunc("/run", runHandler)
 	http.HandleFunc("/go", goHandler)
 
