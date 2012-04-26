@@ -6,7 +6,6 @@ import (
 	ss "github.com/Leimy/sortstring"
 	"log"
 	"net/http"
-//	"old/template"
 	"html/template"
 	"sort"
 	"strings"
@@ -15,13 +14,6 @@ import (
 var ts = make(map[string]*template.Template)
 
 var anagrams map[string][]string
-
-// func init() {
-// 	anagrams = ana.AnagramsFromFile("/usr/share/dict/words")
-// 	for _, tmpl := range []string{"input", "results"} {
-// 		ts[tmpl] = template.MustParseFile(tmpl+".html", nil)
-// 	}
-// }
 
 func init () {
 	anagrams = ana.AnagramsFromFile("/usr/share/dict/words")
